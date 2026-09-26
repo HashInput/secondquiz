@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTU - DSA Preliminary Quiz Reviewer</title>
+    <style>
+        :root {
+            --rtu-blue: #0b2545;
+            --rtu-gold: #c59b27;
+            --rtu-light-blue: #134074;
+            --bg-gray: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+            --success: #28a745;
+            --danger: #dc3545;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--rtu-blue), var(--rtu-light-blue));
+            color: white;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            border-bottom: 5px solid var(--rtu-gold);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 800;
+        }
+
+        header h2 {
+            font-size: 1.2rem;
+            color: var(--rtu-gold);
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.85;
+            margin-top: 8px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--rtu-blue);
+        }
+
+        .tab-btn.active {
+            background: var(--rtu-blue);
+            color: white;
+            border-color: var(--rtu-blue);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Banner */
+        .alert-box {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffeeba;
+            border-color: var(--rtu-gold);
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            color: #856404;
+        }
+
+        /* Exam Card Styling */
+        .section-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            color: var(--rtu-blue);
+            border-bottom: 2px solid var(--rtu-gold);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .question-block {
+            padding: 16px 0;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        @media (min-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.92rem;
+        }
+
+        .option-label:hover {
+            background: #edf2f7;
+        }
+
+        .option-label input {
+            margin-right: 12px;
+            accent-color: var(--rtu-blue);
+        }
+
+        /* Result States */
+        .option-label.correct {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724 !important;
+            font-weight: bold;
+        }
+
+        .option-label.wrong {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24 !important;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            background: #e8f4fd;
+            border-left: 4px solid #134074;
+            color: #0b2545;
+        }
+
+        /* Matching Style */
+        .match-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        @media (min-width: 650px) {
+            .match-row {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        .match-term {
+            font-weight: 600;
+            font-size: 0.95rem;
+            width: 45%;
+        }
+
+        .match-select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .match-key-panel {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .match-key-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        /* Score & Actions */
+        .actions-panel {
+            position: sticky;
+            bottom: 15px;
+            background: white;
+            border: 2px solid var(--rtu-gold);
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .score-box {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--rtu-blue);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .btn-submit {
+            background: var(--rtu-blue);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background: var(--rtu-light-blue);
+        }
+
+        .btn-reset {
+            background: #e2e8f0;
+            color: var(--text-dark);
+        }
+
+        .btn-reset:hover {
+            background: #cbd5e1;
+        }
+
+        /* Cheat Sheet / Formula */
+        .formula-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--rtu-gold);
+            border: 1px solid var(--border);
+            border-left-width: 6px;
+            border-left-color: var(--rtu-gold);
+        }
+
+        .formula-card h3 {
+            color: var(--rtu-blue);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .formula-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+
+        .formula-table th, .formula-table td {
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .formula-table th {
+            background-color: #f8fafc;
+            color: var(--rtu-blue);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Rizal Technological University</h1>
+        <h2>Data Structure and Algorithm Preliminary / Midterm Reviewer</h2>
+        <p>Predicted Mock Examination & Blueprint Study Portal</p>
+    </header>
+
+    <div class="container">
+        <!-- Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('quiz-tab')">📝 Take Mock Exam</button>
+            <button class="tab-btn" onclick="switchTab('cheat-tab')">🔍 Professor's Exam Formula</button>
+        </div>
+
+        <!-- TAB 1: INTERACTIVE QUIZ -->
+        <div id="quiz-tab" class="tab-content active">
+            <div class="alert-box">
+                <strong>Examination Direction:</strong> Read and understand each statement carefully. Absolutely no erasure, any erasure will invalidate your answer.
+            </div>
+
+            <form id="quizForm">
+                <!-- PART 1 -->
+                <div class="section-card">
+                    <div class="section-title">
+                        <span>Part 1 – MCQ's (1–10)</span>
+                        <small style="font-size: 0.85rem; font-weight: normal;">10 Items</small>
+                    </div>
+                    <div class="section-desc">
+                        Direction: Write the letter with the correct answer. <strong>Which of the following statements is untrue.</strong>
+                    </div>
+                    <div id="part1-container"></div>
+                </div>
+
+                <!-- PART 2 -->
+                <div class="section-card">
+                    <div class="section-title">
+                        <span>Part 2 – Matching Type (11–20)</span>
+                        <small style="font-size: 0.85rem; font-weight: normal;">10 Items</small>
+                    </div>
+                    <div class="section-desc">
+                        Direction: Select the letter of each example in the second column that matches the term in the first column.
+                    </div>
+
+                    <div class="match-key-panel">
+                        <strong>Column 2 Reference Bank:</strong>
+                        <div class="match-key-grid">
+                            <div><strong>A.</strong> Recursive Fibonacci</div>
+                            <div><strong>B.</strong> Operating system</div>
+                            <div><strong>C.</strong> Method</div>
+                            <div><strong>D.</strong> Time and delay function</div>
+                            <div><strong>E.</strong> Memory Management</div>
+                            <div><strong>F.</strong> Direction of pointers</div>
+                            <div><strong>G.</strong> Algorithm</div>
+                            <div><strong>H.</strong> Nullptr</div>
+                            <div><strong>I.</strong> Hash Map Buckets</div>
+                            <div><strong>J.</strong> Modular and reusable</div>
+                        </div>
+                    </div>
+
+                    <div id="part2-container"></div>
+                </div>
+
+                <!-- PART 3 -->
+                <div class="section-card">
+                    <div class="section-title">
+                        <span>Part 3 – Analogy: Purpose Relationship (21–30)</span>
+                        <small style="font-size: 0.85rem; font-weight: normal;">10 Items</small>
+                    </div>
+                    <div class="section-desc">
+                        Direction: Write the letter with the best and correct answer.
+                    </div>
+                    <div id="part3-container"></div>
+                </div>
+
+                <!-- STICKY ACTION PANEL -->
+                <div class="actions-panel">
+                    <div class="score-box" id="scoreDisplay">Score: -- / 30</div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-reset" onclick="resetQuiz()">Reset</button>
+                        <button type="button" class="btn btn-submit" onclick="gradeQuiz()">Submit Exam</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- TAB 2: EXAM FORMULA & CHEAT SHEET -->
+        <div id="cheat-tab" class="tab-content">
+            <div class="formula-card">
+                <h3>📌 The Professor's 3-Rule Blueprint</h3>
+                <p>By comparing your Quiz 1 directly to the provided slides, your professor creates tests using three specific habits:</p>
+                <br>
+                <ol style="padding-left: 20px;">
+                    <li><strong>The "Untrue" 3-Item Technique (Part 1):</strong> Whenever the slide lists 3 bullet points, the professor creates a question where the 3 points are correct options, and inserts 1 invented or misplaced term as the "untrue" answer.</li>
+                    <li><strong>Categorical Direct Pairing (Part 2):</strong> Matching questions are pulled verbatim from tables, visual labels, and sub-bullets.</li>
+                    <li><strong>Verbatim Sentence Analogies (Part 3):</strong> Complete sentences with clauses like <em>"A is used for B, while C is used for D"</em> are converted into $A : B :: C : [D]$.</li>
+                </ol>
+            </div>
+
+            <div class="formula-card">
+                <h3>📖 Quick Reference Cheat Sheet</h3>
+                <table class="formula-table">
+                    <thead>
+                        <tr>
+                            <th>Concept / Question</th>
+                            <th>Key Pair / Distractor</th>
+                            <th>Slide Reference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Time vs Space Complexity</td>
+                            <td>Time: <strong>Delay function</strong> | Space: <strong>Recursive Fibonacci</strong></td>
+                            <td>Algorithm Analysis Slide 4</td>
+                        </tr>
+                        <tr>
+                            <td>Function vs Method</td>
+                            <td>Function: <strong>procedural / standalone</strong> | Method: <strong>class / dot notation</strong></td>
+                            <td>Function and Method Slide 2-4</td>
+                        </tr>
+                        <tr>
+                            <td>Headers</td>
+                            <td>General: <strong>&lt;algorithm&gt;</strong> | Numeric/handful: <strong>&lt;numeric&gt;</strong></td>
+                            <td>Algorithm Analysis Slide 7</td>
+                        </tr>
+                        <tr>
+                            <td>Linked List vs Arrays</td>
+                            <td>Linked List: <strong>Non-contiguous / O(1)</strong> | Arrays: <strong>Contiguous</strong></td>
+                            <td>Linked List App Handout 2</td>
+                        </tr>
+                        <tr>
+                            <td>Real-World Apps</td>
+                            <td>Music Playlists: <strong>Doubly Linked</strong> | Photoshop: <strong>Undo/Redo</strong></td>
+                            <td>Linked List App Handout 2</td>
+                        </tr>
+                        <tr>
+                            <td>Empty List Marker</td>
+                            <td>Head Pointer points to <strong>nullptr</strong></td>
+                            <td>Linked List App Slide 5</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data for Part 1: Untrue Multiple Choice
+        const part1Data = [
+            {
+                id: 1,
+                stem: "1. It is part of the complete analysis of the running time of an algorithm.",
+                options: [
+                    { k: "a", t: "implement algorithm completely" },
+                    { k: "b", t: "determine time required for each basic operation" },
+                    { k: "c", t: "identify unknown quantities describing frequency" },
+                    { k: "d", t: "compile the source code" }
+                ],
+                answer: "d",
+                cite: "Analyze Algorithm Slide 6 explicitly lists (a), (b), and (c). 'Compile the source code' is the untrue distractor."
+            },
+            {
+                id: 2,
+                stem: "2. It is part of the three main algorithm analysis techniques.",
+                options: [
+                    { k: "a", t: "worst-case analysis" },
+                    { k: "b", t: "best-case analysis" },
+                    { k: "c", t: "average-case analysis" },
+                    { k: "d", t: "critical-case analysis" }
+                ],
+                answer: "d",
+                cite: "Handout 1, Page 1: Lists worst-case, best-case, and average-case. 'Critical-case' does not exist."
+            },
+            {
+                id: 3,
+                stem: "3. It is part of the function of linked list.",
+                options: [
+                    { k: "a", t: "traversal" },
+                    { k: "b", t: "reversal" },
+                    { k: "c", t: "compilation" },
+                    { k: "d", t: "length calculation" }
+                ],
+                answer: "c",
+                cite: "Function of Linked List Slides 9-10 list: Traversal, Search, Update, Sorting, Reversal, Length Calculation."
+            },
+            {
+                id: 4,
+                stem: "4. It is part of key reasons why linked lists are used.",
+                options: [
+                    { k: "a", t: "dynamic size" },
+                    { k: "b", t: "memory utilization" },
+                    { k: "c", t: "contiguous memory allocation" },
+                    { k: "d", t: "simplified complexity" }
+                ],
+                answer: "c",
+                cite: "Slides 12-13: Linked lists use non-contiguous memory. Contiguous allocation is an array attribute."
+            },
+            {
+                id: 5,
+                stem: "5. It is part of example use cases of linked list.",
+                options: [
+                    { k: "a", t: "dynamic memory allocation" },
+                    { k: "b", t: "polynomial operations" },
+                    { k: "c", t: "graph adjacency representation" },
+                    { k: "d", t: "cache register indexing" }
+                ],
+                answer: "d",
+                cite: "Slide 14 explicitly enumerates Dynamic memory, Polynomial operations, and Graph adjacency representation."
+            },
+            {
+                id: 6,
+                stem: "6. It is part of Application Software & UI Features of linked lists.",
+                options: [
+                    { k: "a", t: "image viewers & playlists" },
+                    { k: "b", t: "undo/redo contexts" },
+                    { k: "c", t: "web browser navigation" },
+                    { k: "d", t: "memory management" }
+                ],
+                answer: "d",
+                cite: "Handout 2, Page 1: Memory Management is categorized under 'System & OS Software', NOT Application Software."
+            },
+            {
+                id: 7,
+                stem: "7. It is part of the characteristics of a function.",
+                options: [
+                    { k: "a", t: "standalone blocks" },
+                    { k: "b", t: "exists on its own" },
+                    { k: "c", t: "procedural programming" },
+                    { k: "d", t: "belongs to a certain class" }
+                ],
+                answer: "d",
+                cite: "Slide 2-3: 'Belongs to a certain class' describes a Method, whereas a function exists on its own."
+            },
+            {
+                id: 8,
+                stem: "8. It is part of the characteristics of a method.",
+                options: [
+                    { k: "a", t: "associated with objects" },
+                    { k: "b", t: "implicit data access" },
+                    { k: "c", t: "requires all data passed explicitly" },
+                    { k: "d", t: "object-oriented programming" }
+                ],
+                answer: "c",
+                cite: "Slide 3-4: Methods have implicit access; standalone functions require all data to be passed explicitly."
+            },
+            {
+                id: 9,
+                stem: "9. It is part of a function definition specification in C.",
+                options: [
+                    { k: "a", t: "name of the function" },
+                    { k: "b", t: "return type" },
+                    { k: "c", t: "parameter types" },
+                    { k: "d", t: "memory address" }
+                ],
+                answer: "d",
+                cite: "Handout 3, Page 1: Specifies name, types and number of parameters, and return type."
+            },
+            {
+                id: 10,
+                stem: "10. It is part of why to use C++ linked lists over arrays.",
+                options: [
+                    { k: "a", t: "dynamic resizing" },
+                    { k: "b", t: "no allocation contiguity" },
+                    { k: "c", t: "O(1) modifications" },
+                    { k: "d", t: "random index access" }
+                ],
+                answer: "d",
+                cite: "Handout 2, Page 1: Lists 1. Dynamic Resizing, 2. No Allocation Contiguity, 3. O(1) Modifications."
+            }
+        ];
+
+        // Data for Part 2: Matching
+        const part2Data = [
+            { id: 11, term: "11. Time Complexity", answer: "D", cite: "Slide 4: Example of Time Complexity: Time and delay function" },
+            { id: 12, term: "12. Space Complexity", answer: "A", cite: "Slide 4: Example of Space Complexity: Recursive Fibonacci" },
+            { id: 13, term: "13. Main function", answer: "B", cite: "Slide 7: The main function is called by the operating system" },
+            { id: 14, term: "14. Dot notation", answer: "C", cite: "Slide 9: It use a dot notation before method names..." },
+            { id: 15, term: "15. Heap", answer: "E", cite: "Handout 2: Operating systems use linked lists to track free blocks in heap" },
+            { id: 16, term: "16. Cooking recipe", answer: "G", cite: "Handout 1: Think of a cooking recipe... providing a sequence for an algorithm" },
+            { id: 17, term: "17. Reversal", answer: "F", cite: "Slide 10: Reversing a linked list involves changing direction of pointers" },
+            { id: 18, term: "18. Collision", answer: "I", cite: "Handout 2: Hash Map Buckets: When a hash map encounters a collision..." },
+            { id: 19, term: "19. Empty list", answer: "H", cite: "Slide 5: If the list is empty, the head pointer is nullptr" },
+            { id: 20, term: "20. Namespace", answer: "J", cite: "Slide 10: By tying these functions to an object's namespace... modular and reusable" }
+        ];
+
+        // Data for Part 3: Analogies
+        const part3Data = [
+            {
+                id: 21,
+                stem: "21. Time complexity is to runtime as space complexity is to:",
+                options: [{ k: "a", t: "memory" }, { k: "b", t: "compiler" }, { k: "c", t: "code length" }, { k: "d", t: "iteration" }],
+                answer: "a",
+                cite: "Slide 4: Time complexity measures runtime; space complexity assesses memory."
+            },
+            {
+                id: 22,
+                stem: "22. Function is to procedural as method is to:",
+                options: [{ k: "a", t: "linear" }, { k: "b", t: "object-oriented" }, { k: "c", t: "sequential" }, { k: "d", t: "conditional" }],
+                answer: "b",
+                cite: "Slide 3 & 4: Functions in procedural languages; methods in object-oriented languages."
+            },
+            {
+                id: 23,
+                stem: "23. Function is to function() as method is to:",
+                options: [{ k: "a", t: "class.method()" }, { k: "b", t: "object.method()" }, { k: "c", t: "method()" }, { k: "d", t: "&method()" }],
+                answer: "b",
+                cite: "Slide 2 Comparison Table: Function is function(); Method is object.method()."
+            },
+            {
+                id: 24,
+                stem: "24. Music app is to playlist as Photoshop is to:",
+                options: [{ k: "a", t: "dynamic memory" }, { k: "b", t: "undo/redo" }, { k: "c", t: "process scheduling" }, { k: "d", t: "browser navigation" }],
+                answer: "b",
+                cite: "Handout 2: Music apps use playlists; Photoshop uses undo/redo contexts."
+            },
+            {
+                id: 25,
+                stem: "25. Stack is to singly linked list as queue is to:",
+                options: [{ k: "a", t: "binary tree" }, { k: "b", t: "doubly linked list" }, { k: "c", t: "circular array" }, { k: "d", t: "hash table" }],
+                answer: "b",
+                cite: "Slide 13: stack can be implemented using singly linked list, queue using doubly linked list."
+            },
+            {
+                id: 26,
+                stem: "26. First node is to head as last node is to:",
+                options: [{ k: "a", t: "nullptr (or NULL)" }, { k: "b", t: "tail pointer" }, { k: "c", t: "root" }, { k: "d", t: "zero" }],
+                answer: "a",
+                cite: "Slide 5 & Handout 2: Final node points to nullptr (or NULL)."
+            },
+            {
+                id: 27,
+                stem: "27. Traversal is to accessing each element as update is to:",
+                options: [{ k: "a", t: "counting nodes" }, { k: "b", t: "changing the data of a node" }, { k: "c", t: "finding a specific value" }, { k: "d", t: "arranging nodes" }],
+                answer: "b",
+                cite: "Slide 9: Updating involves changing the data of a node at a specific position."
+            },
+            {
+                id: 28,
+                stem: "28. Standard algorithms is to <algorithm> as handful algorithms is to:",
+                options: [{ k: "a", t: "<iostream>" }, { k: "b", t: "<conio.h>" }, { k: "c", t: "<numeric>" }, { k: "d", t: "<stdlib.h>" }],
+                answer: "c",
+                cite: "Slide 7: standard algorithms in <algorithm>; a handful in <numeric>."
+            },
+            {
+                id: 29,
+                stem: "29. Array is to contiguous memory as linked list is to:",
+                options: [{ k: "a", t: "dynamic size" }, { k: "b", t: "non-contiguous memory" }, { k: "c", t: "stack memory" }, { k: "d", t: "fixed memory" }],
+                answer: "b",
+                cite: "Slide 12: Arrays require contiguous memory; linked lists use non-contiguous memory locations."
+            },
+            {
+                id: 30,
+                stem: "30. Algorithm is to step-by-step instructions as method is to:",
+                options: [{ k: "a", t: "independent block" }, { k: "b", t: "collection of variables" }, { k: "c", t: "settled kind of procedure" }, { k: "d", t: "procedural plan" }],
+                answer: "c",
+                cite: "Handout 3, Page 1: Method refers to a settled kind of procedure."
+            }
+        ];
+
+        // Render Functions
+        function renderMCQ(containerId, data) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = data.map(item => `
+                <div class="question-block" id="q-block-${item.id}">
+                    <div class="question-text">${item.stem}</div>
+                    <div class="options-grid">
+                        ${item.options.map(opt => `
+                            <label class="option-label" id="lbl-${item.id}-${opt.k}">
+                                <input type="radio" name="q${item.id}" value="${opt.k}">
+                                <span><strong>${opt.k}.</strong> ${opt.t}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${item.id}">${item.cite}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderMatching() {
+            const container = document.getElementById('part2-container');
+            const choices = [
+                { k: "A", t: "A. Recursive Fibonacci" },
+                { k: "B", t: "B. Operating system" },
+                { k: "C", t: "C. Method" },
+                { k: "D", t: "D. Time and delay function" },
+                { k: "E", t: "E. Memory Management" },
+                { k: "F", t: "F. Direction of pointers" },
+                { k: "G", t: "G. Algorithm" },
+                { k: "H", t: "H. Nullptr" },
+                { k: "I", t: "I. Hash Map Buckets" },
+                { k: "J", t: "J. Modular and reusable" }
+            ];
+
+            container.innerHTML = part2Data.map(item => `
+                <div class="match-row" id="match-row-${item.id}">
+                    <div class="match-term">${item.term}</div>
+                    <select class="match-select" name="match${item.id}" id="select-${item.id}">
+                        <option value="">-- Choose matching answer --</option>
+                        ${choices.map(c => `<option value="${c.k}">${c.t}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="explanation" id="exp-${item.id}">${item.cite}</div>
+            `).join('');
+        }
+
+        // Init
+        renderMCQ('part1-container', part1Data);
+        renderMatching();
+        renderMCQ('part3-container', part3Data);
+
+        // Grade Function
+        function gradeQuiz() {
+            let score = 0;
+
+            // Grade Part 1
+            part1Data.forEach(item => {
+                const selected = document.querySelector(`input[name="q${item.id}"]:checked`);
+                const exp = document.getElementById(`exp-${item.id}`);
+                exp.style.display = 'block';
+
+                item.options.forEach(opt => {
+                    const lbl = document.getElementById(`lbl-${item.id}-${opt.k}`);
+                    lbl.classList.remove('correct', 'wrong');
+                    if (opt.k === item.answer) lbl.classList.add('correct');
+                });
+
+                if (selected) {
+                    if (selected.value === item.answer) {
+                        score++;
+                    } else {
+                        document.getElementById(`lbl-${item.id}-${selected.value}`).classList.add('wrong');
+                    }
+                }
+            });
+
+            // Grade Part 2
+            part2Data.forEach(item => {
+                const select = document.getElementById(`select-${item.id}`);
+                const exp = document.getElementById(`exp-${item.id}`);
+                exp.style.display = 'block';
+
+                select.style.border = '2px solid';
+                if (select.value === item.answer) {
+                    score++;
+                    select.style.borderColor = 'var(--success)';
+                    select.style.backgroundColor = '#d4edda';
+                } else {
+                    select.style.borderColor = 'var(--danger)';
+                    select.style.backgroundColor = '#f8d7da';
+                }
+            });
+
+            // Grade Part 3
+            part3Data.forEach(item => {
+                const selected = document.querySelector(`input[name="q${item.id}"]:checked`);
+                const exp = document.getElementById(`exp-${item.id}`);
+                exp.style.display = 'block';
+
+                item.options.forEach(opt => {
+                    const lbl = document.getElementById(`lbl-${item.id}-${opt.k}`);
+                    lbl.classList.remove('correct', 'wrong');
+                    if (opt.k === item.answer) lbl.classList.add('correct');
+                });
+
+                if (selected) {
+                    if (selected.value === item.answer) {
+                        score++;
+                    } else {
+                        document.getElementById(`lbl-${item.id}-${selected.value}`).classList.add('wrong');
+                    }
+                }
+            });
+
+            // Display Score
+            const display = document.getElementById('scoreDisplay');
+            display.innerText = `Score: ${score} / 30 (${Math.round((score/30)*100)}%)`;
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        // Reset Function
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.option-label').forEach(el => el.classList.remove('correct', 'wrong'));
+            document.querySelectorAll('.match-select').forEach(el => {
+                el.style.borderColor = 'var(--border)';
+                el.style.backgroundColor = 'white';
+            });
+            document.querySelectorAll('.explanation').forEach(el => el.style.display = 'none');
+            document.getElementById('scoreDisplay').innerText = `Score: -- / 30`;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Tabs
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
